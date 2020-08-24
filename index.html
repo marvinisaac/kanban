@@ -35,13 +35,12 @@
         </style>
     </head>
     <body>
-        <input id="taskNewInput"
+        <input id="taskNewInput" autofocus
             type="text" placeholder="Add new task...">
 
         <div>
             <h1>TODO</h1>
-            <ul>
-                <li>Enable movement of task to next column</li>
+            <ul id="listTodo">
                 <li>Save tasks to browser's storage</li>
             </ul>
         </div>
@@ -49,18 +48,44 @@
         <div>
             <h1>DOING</h1>
             <ul>
-                <li>Add new tasks using JavaScript</li>
+                <li>Enable movement of task to next column</li>
             </ul>
         </div>
         
         <div>
             <h1>DONE</h1>
             <ul>
+                <li>Add new tasks using JavaScript</li>
                 <li>Deploy as GitHub Page</li>
                 <li>Add CSS styles</li>
                 <li>Add HTML body</li>
                 <li>Create index.html</li>
             </ul>
         </div>
+        <script>
+            var taskInput = document.getElementById('taskNewInput');
+
+            function taskCreate (event) {
+                if (event.key !== 'Enter') {
+                    return false;
+                }
+
+                var task = taskInput.value;
+                cardCreate(task);
+
+                taskInput.value = '';
+            }
+
+            function cardCreate (task) {
+                var listTodo = document.getElementById('listTodo');
+                var cardNew = document.createElement('li');
+                var cardNewText = document.createTextNode(task);
+
+                cardNew.appendChild(cardNewText);
+                listTodo.appendChild(cardNew);
+            }
+
+            taskInput.addEventListener('keypress', taskCreate);
+        </script>
     </body>
 </html>

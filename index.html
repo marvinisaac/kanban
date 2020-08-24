@@ -23,6 +23,10 @@
                 margin: 10px;
                 padding: 10px;
             }
+            div #listTodo li,
+            div #listDoing li {
+                cursor: pointer;
+            }
             #taskNewInput {
                 border: 2px solid black;
                 box-sizing: border-box;
@@ -47,14 +51,14 @@
         
         <div>
             <h1>DOING</h1>
-            <ul>
+            <ul id="listDoing">
                 <li>Enable movement of task to next column</li>
             </ul>
         </div>
         
         <div>
             <h1>DONE</h1>
-            <ul>
+            <ul id="listDone">
                 <li>Add new tasks using JavaScript</li>
                 <li>Deploy as GitHub Page</li>
                 <li>Add CSS styles</li>
@@ -64,6 +68,8 @@
         </div>
         <script>
             var taskInput = document.getElementById('taskNewInput');
+            taskTodoAddEvent();
+            taskDoingAddEvent();
 
             function taskCreate (event) {
                 if (event.key !== 'Enter') {
@@ -76,13 +82,55 @@
                 taskInput.value = '';
             }
 
-            function cardCreate (task) {
-                var listTodo = document.getElementById('listTodo');
+            function cardCreate (task, tasklist = 'listTodo') {
+                var listDestination = document.getElementById(tasklist);
                 var cardNew = document.createElement('li');
                 var cardNewText = document.createTextNode(task);
 
                 cardNew.appendChild(cardNewText);
-                listTodo.appendChild(cardNew);
+                listDestination.prepend(cardNew);
+
+                if (tasklist === 'listTodo') {
+                    taskTodoAddEvent();
+                }
+
+                if (tasklist === 'listDoing') {
+                    taskDoingAddEvent();
+                }
+            }
+
+            function taskTodoAddEvent () {
+                var tasklistTodo = document.getElementById('listTodo').children;
+                var tasklistTodoLength = tasklistTodo.length - 1;
+
+                for (var i = tasklistTodoLength; i >= 0; i--) {
+                    tasklistTodo[i].addEventListener('click', taskMoveToDoing);
+                }
+            }
+
+            function taskDoingAddEvent () {
+                var tasklistDoing = document.getElementById('listDoing').children;
+                var tasklistDoingLength = tasklistDoing.length - 1;
+
+                for (var i = tasklistDoingLength; i >= 0; i--) {
+                    tasklistDoing[i].addEventListener('click', taskMoveToDone);
+                }
+            }
+
+            function taskMoveToDoing (event) {
+                var taskOriginal = event.target;
+                var task = taskOriginal.innerHTML;
+
+                cardCreate(task, 'listDoing');
+                taskOriginal.remove();
+            }
+
+            function taskMoveToDone (event) {
+                var taskOriginal = event.target;
+                var task = taskOriginal.innerHTML;
+
+                cardCreate(task, 'listDone');
+                taskOriginal.remove();
             }
 
             taskInput.addEventListener('keypress', taskCreate);

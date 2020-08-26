@@ -44,32 +44,47 @@
 
         <div>
             <h1>TODO</h1>
-            <ul id="listTodo">
-                <li>Save tasks to browser's storage</li>
-            </ul>
+            <ul id="listTodo"></ul>
         </div>
         
         <div>
             <h1>DOING</h1>
-            <ul id="listDoing">
-                <li>Enable movement of task to next column</li>
-            </ul>
+            <ul id="listDoing"></ul>
         </div>
         
         <div>
             <h1>DONE</h1>
-            <ul id="listDone">
-                <li>Add new tasks using JavaScript</li>
-                <li>Deploy as GitHub Page</li>
-                <li>Add CSS styles</li>
-                <li>Add HTML body</li>
-                <li>Create index.html</li>
-            </ul>
+            <ul id="listDone"></ul>
         </div>
         <script>
             var taskInput = document.getElementById('taskNewInput');
-            taskTodoAddEvent();
-            taskDoingAddEvent();
+            var kanbanTodo = [];
+            var kanbanDoing = [
+                'Save tasks to browser\'s storage'
+            ];
+            var kanbanDone = [
+                'Enable movement of task to next column',
+                'Add new task using Javascript',
+                'Deploy as GitHub Page',
+                'Add CSS styles',
+                'Add HTML body',
+                'Create index.html'
+            ];
+
+            kanbanInit();
+            taskInput.addEventListener('keypress', taskCreate);
+            
+            function kanbanInit () {
+                kanbanColumnInit(kanbanTodo, 'listTodo');
+                kanbanColumnInit(kanbanDoing, 'listDoing');
+                kanbanColumnInit(kanbanDone, 'listDone');
+            }
+
+            function kanbanColumnInit(tasks, list) {
+                for (var i = 0; i < tasks.length; i++) {
+                    cardCreate(tasks[i], list);
+                }
+            }
 
             function taskCreate (event) {
                 if (event.key !== 'Enter') {
@@ -132,8 +147,6 @@
                 cardCreate(task, 'listDone');
                 taskOriginal.remove();
             }
-
-            taskInput.addEventListener('keypress', taskCreate);
         </script>
     </body>
 </html>

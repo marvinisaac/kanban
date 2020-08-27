@@ -71,10 +71,30 @@
                 'Create index.html'
             ];
 
-            kanbanInit();
+            kanbanDraw();
+            kanbanAddEvents();
             taskInput.addEventListener('keypress', taskCreate);
-            
-            function kanbanInit () {
+
+            function kanbanUpdate () {
+                kanbanReset();
+                kanbanDraw();
+                kanbanAddEvents();
+            }
+
+            function kanbanReset () {
+                columnReset('listTodo');
+                columnReset('listDoing');
+                columnReset('listDone');
+            }
+
+            function columnReset (column) {
+                column = document.getElementById(column);
+                while (column.firstChild) {
+                    column.removeChild(column.firstChild);
+                }
+            }
+
+            function kanbanDraw () {
                 kanbanColumnInit(kanbanTodo, 'listTodo');
                 kanbanColumnInit(kanbanDoing, 'listDoing');
                 kanbanColumnInit(kanbanDone, 'listDone');
@@ -86,15 +106,31 @@
                 }
             }
 
+            function kanbanAddEvents() {
+                var tasklistTodo = document.getElementById('listTodo').children;
+                var tasklistTodoLength = tasklistTodo.length - 1;
+
+                for (var i = tasklistTodoLength; i >= 0; i--) {
+                    tasklistTodo[i].addEventListener('click', taskMoveToDoing);
+                }
+
+                var tasklistDoing = document.getElementById('listDoing').children;
+                var tasklistDoingLength = tasklistDoing.length - 1;
+
+                for (var i = tasklistDoingLength; i >= 0; i--) {
+                    tasklistDoing[i].addEventListener('click', taskMoveToDone);
+                }
+            }
+
             function taskCreate (event) {
                 if (event.key !== 'Enter') {
                     return false;
                 }
 
                 var task = taskInput.value;
-                cardCreate(task);
-
                 taskInput.value = '';
+                kanbanTodo.push(task);
+                kanbanUpdate();
             }
 
             function cardCreate (task, tasklist = 'listTodo') {
@@ -104,48 +140,28 @@
 
                 cardNew.appendChild(cardNewText);
                 listDestination.prepend(cardNew);
-
-                if (tasklist === 'listTodo') {
-                    taskTodoAddEvent();
-                }
-
-                if (tasklist === 'listDoing') {
-                    taskDoingAddEvent();
-                }
-            }
-
-            function taskTodoAddEvent () {
-                var tasklistTodo = document.getElementById('listTodo').children;
-                var tasklistTodoLength = tasklistTodo.length - 1;
-
-                for (var i = tasklistTodoLength; i >= 0; i--) {
-                    tasklistTodo[i].addEventListener('click', taskMoveToDoing);
-                }
-            }
-
-            function taskDoingAddEvent () {
-                var tasklistDoing = document.getElementById('listDoing').children;
-                var tasklistDoingLength = tasklistDoing.length - 1;
-
-                for (var i = tasklistDoingLength; i >= 0; i--) {
-                    tasklistDoing[i].addEventListener('click', taskMoveToDone);
-                }
             }
 
             function taskMoveToDoing (event) {
                 var taskOriginal = event.target;
                 var task = taskOriginal.innerHTML;
 
-                cardCreate(task, 'listDoing');
-                taskOriginal.remove();
+                var index = kanbanTodo.indexOf(task);
+                kanbanTodo.splice(index, 1);
+
+                kanbanDoing.push(task);
+                kanbanUpdate();
             }
 
             function taskMoveToDone (event) {
                 var taskOriginal = event.target;
                 var task = taskOriginal.innerHTML;
 
-                cardCreate(task, 'listDone');
-                taskOriginal.remove();
+                var index = kanbanDoing.indexOf(task);
+                kanbanDoing.splice(index, 1);
+
+                kanbanDone.push(task);
+                kanbanUpdate();
             }
         </script>
     </body>

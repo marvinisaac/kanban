@@ -59,24 +59,17 @@
         <script>
             var taskInput = document.getElementById('taskNewInput');
             var kanbanTodo = [];
-            var kanbanDoing = [
-                'Save tasks to browser\'s storage'
-            ];
-            var kanbanDone = [
-                'Enable movement of task to next column',
-                'Add new task using Javascript',
-                'Deploy as GitHub Page',
-                'Add CSS styles',
-                'Add HTML body',
-                'Create index.html'
-            ];
+            var kanbanDoing = [];
+            var kanbanDone = [];
 
+            kanbanLoad();
             kanbanDraw();
             kanbanAddEvents();
             taskInput.addEventListener('keypress', taskCreate);
 
             function kanbanUpdate () {
                 kanbanReset();
+                kanbanSave();
                 kanbanDraw();
                 kanbanAddEvents();
             }
@@ -92,6 +85,18 @@
                 while (column.firstChild) {
                     column.removeChild(column.firstChild);
                 }
+            }
+
+            function kanbanLoad () {
+                kanbanTodo = JSON.parse(localStorage.getItem('todo')) || [];
+                kanbanDoing = JSON.parse(localStorage.getItem('doing')) || [];
+                kanbanDone = JSON.parse(localStorage.getItem('done')) || [];
+            }
+
+            function kanbanSave () {
+                localStorage.setItem('todo', JSON.stringify(kanbanTodo));
+                localStorage.setItem('doing', JSON.stringify(kanbanDoing));
+                localStorage.setItem('done', JSON.stringify(kanbanDone));
             }
 
             function kanbanDraw () {

@@ -15,6 +15,7 @@ In this project, we'll start from the very basic hanggang sa mga advanced topic.
 
 ### Project Demo:
 - [GitHub Page](https://marvinisaac.github.io/kanban)
-- [Netlify](https://kanban.marvinisaac.com)
+- [Netlify](https://frosty-bell-eceff6.netlify.app/) | [Custom Domain](https://kanban.marvinisaac.com)
+- [Vercel](https://kanban-marvinisaac.vercel.app/) | [Custom Domain](https://kanban-vercel.marvinisaac.com/)
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/856994c2-75ad-4bb9-bf3a-a858d6dcdda5/deploy-status)](https://app.netlify.com/sites/frosty-bell-eceff6/deploys)

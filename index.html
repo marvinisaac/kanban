@@ -53,22 +53,26 @@
             input.addEventListener('keypress', taskCreate);
 
             // Initialize task arrays and create columns
-            var tasksTodo = [
-                'Store tasks to local storage'
-            ];
-            var tasksDoing = [
-                'Save tasks in JS arrays'
-            ];
-            var tasksDone = [
-                'Move tasks to next column',
-                'Add new tasks using JS',
-                'Deploy to Netlify',
-                'Deply as GitHub page',
-                'Add CSS styles',
-                'Add HTML body',
-                'Create index.html',
-            ];
+            var tasksTodo = [];
+            var tasksDoing = [];
+            var tasksDone = [];
+            storageLoad();
             kanbanRedraw();
+
+            // Loads JSON stored in local storage
+            // If none is found, leave as blank arrays
+            function storageLoad () {
+                tasksTodo = JSON.parse(localStorage.getItem('todo')) || [];
+                tasksDoing = JSON.parse(localStorage.getItem('doing')) || [];
+                tasksDone = JSON.parse(localStorage.getItem('done')) || [];
+            }
+
+            // Store arrays as JSON to local storage
+            function storageSave () {
+                localStorage.setItem('todo', JSON.stringify(tasksTodo));
+                localStorage.setItem('doing', JSON.stringify(tasksDoing));
+                localStorage.setItem('done', JSON.stringify(tasksDone));
+            }
 
             // Redraws the whole kanban by:
             // 1) clearing all columns
@@ -110,6 +114,7 @@
                 var task = input.value;
                 input.value = '';
                 tasksTodo.unshift(task);
+                storageSave();
                 kanbanRedraw();
             }
 
@@ -138,6 +143,7 @@
                 var index = origin.indexOf(task);
                 origin.splice(index, 1);
                 destination.unshift(task);
+                storageSave();
                 kanbanRedraw();
             }
         </script>

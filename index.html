@@ -35,7 +35,7 @@
         <input id="taskNew" placeholder="Add new task..." type="text">
         <div>
             <h1>TODO</h1>
-            <ul>
+            <ul id="todo">
             </ul>
         </div>
         
@@ -56,5 +56,28 @@
                 <li>Create index.html</li>
             </ul>
         </div>
+        <script>
+            var input = document.getElementById('taskNew');
+            input.addEventListener('keypress', taskCreate);
+
+            function taskCreate (event) {
+                if (event.key !== 'Enter') {
+                    return false;
+                }
+
+                var task = input.value;
+                input.value = '';
+                cardCreate(task);
+            }
+
+            function cardCreate (task) {
+                var todo = document.getElementById('todo');
+                var card = document.createElement('li');
+                var cardText = document.createTextNode(task);
+
+                card.appendChild(cardText);
+                todo.appendChild(card);
+            }
+        </script>
     </body>
 </html>

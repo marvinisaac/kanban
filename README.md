@@ -9,7 +9,8 @@ In this project, we'll start from the very basic hanggang sa mga advanced topic.
 - ✅ [Tutorial Home Page](https://codewithkuya.marvinisaac.com)
 - ✅ [Part 1: HTML and CSS](https://codewithkuya.marvinisaac.com/kanban-app-html-and-css)
 - ✅ [Part 2: Git and GitHub](https://codewithkuya.marvinisaac.com/kanban-app-git-and-github) 
-- 🚧 Part 3: JS Events and DOM Manipulation
+- 📝 Part 3: JS Events and DOM Manipulation
+- 📝 Part 4: JS Arrays and Local Storage
 
 ### Project Demo:
 - [GitHub Page](https://marvinisaac.github.io/kanban)

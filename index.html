@@ -35,38 +35,42 @@
         <input id="taskNew" placeholder="Add new task..." type="text">
         <div>
             <h1>TODO</h1>
-            <ul id="todo">
-            </ul>
+            <ul id="todo"></ul>
         </div>
         
         <div>
             <h1>DOING</h1>
-            <ul id="doing">
-                <li>Move tasks to next columns</li>
-            </ul>
+            <ul id="doing"></ul>
         </div>
         
         <div>
             <h1>DONE</h1>
-            <ul id="done">
-                <li>Add new tasks using JS</li>
-                <li>Deploy to Netlify</li>
-                <li>Deploy as GitHub Page</li>
-                <li>Add CSS styles</li>
-                <li>Add HTML body</li>
-                <li>Create index.html</li>
-            </ul>
+            <ul id="done"></ul>
         </div>
         <script>
             // Add keypress event listener to input
             var input = document.getElementById('taskNew');
             input.addEventListener('keypress', taskCreate);
 
-            // Add click event listener to all <li></li> elements
-            var cards = document.getElementsByTagName('li');
-            for (var index = cards.length - 1; index >= 0; index--) {
-                cards[index].addEventListener('click', cardMove);
-            }
+            // Initialize task arrays and create columns
+            var tasksTodo = [
+                'Store tasks to local storage'
+            ];
+            var tasksDoing = [
+                'Save tasks in JS arrays'
+            ];
+            var tasksDone = [
+                'Move tasks to next column',
+                'Add new tasks using JS',
+                'Deploy to Netlify',
+                'Deply as GitHub page',
+                'Add CSS styles',
+                'Add HTML body',
+                'Create index.html',
+            ];
+            columnCreate('todo', tasksTodo);
+            columnCreate('doing', tasksDoing);
+            columnCreate('done', tasksDone);
 
             // Handle addition of new tasks
             function taskCreate (event) {
@@ -76,18 +80,25 @@
 
                 var task = input.value;
                 input.value = '';
-                cardCreate(task);
+                cardCreate(task, 'todo');
             }
 
-            // Create cards in TODO column and add click event listeners
-            function cardCreate (task) {
-                var todo = document.getElementById('todo');
+            // Fill columns with tasks
+            function columnCreate(column, tasks) {
+                for (var index = tasks.length - 1; index >= 0; index--) {
+                    cardCreate(tasks[index], column);
+                }
+            }
+
+            // Create cards in specified column and add click event listeners
+            function cardCreate (task, column) {
+                var column = document.getElementById(column);
                 var card = document.createElement('li');
                 var cardText = document.createTextNode(task);
 
                 card.appendChild(cardText);
                 card.addEventListener('click', cardMove);
-                todo.appendChild(card);
+                column.prepend(card);
             }
 
             // Handle movement of cards to next column

@@ -68,19 +68,19 @@
                 'Add HTML body',
                 'Create index.html',
             ];
-            columnCreate('todo', tasksTodo);
-            columnCreate('doing', tasksDoing);
-            columnCreate('done', tasksDone);
+            kanbanRedraw();
 
-            // Handle addition of new tasks
-            function taskCreate (event) {
-                if (event.key !== 'Enter') {
-                    return false;
+            // Redraws the whole kanban by:
+            // 1) clearing all columns
+            // 2) re-creating columns with updated array contents
+            function kanbanRedraw () {
+                var cards = document.getElementsByTagName('li');
+                for (var index = cards.length - 1; index >= 0; index--) {
+                    cards[index].remove();
                 }
-
-                var task = input.value;
-                input.value = '';
-                cardCreate(task, 'todo');
+                columnCreate('todo', tasksTodo);
+                columnCreate('doing', tasksDoing);
+                columnCreate('done', tasksDone);
             }
 
             // Fill columns with tasks
@@ -97,22 +97,37 @@
                 var cardText = document.createTextNode(task);
 
                 card.appendChild(cardText);
-                card.addEventListener('click', cardMove);
+                card.addEventListener('click', taskMove);
                 column.prepend(card);
             }
 
-            // Handle movement of cards to next column
-            function cardMove (event) {
-                var task = event.target;
-                var origin = event.target.parentNode.id;
+            // Handle addition of new tasks
+            function taskCreate (event) {
+                if (event.key !== 'Enter') {
+                    return false;
+                }
+
+                var task = input.value;
+                input.value = '';
+                tasksTodo.unshift(task);
+                kanbanRedraw();
+            }
+
+            // Handle movement of tasks to next 
+            function taskMove (event) {
+                var task = event.target.innerText;
+                var originId = event.target.parentNode.id;
+                var origin = undefined
                 var destination = undefined;
 
-                switch (origin) {
+                switch (originId) {
                     case 'todo':
-                        destination = document.getElementById('doing');
+                        origin = tasksTodo
+                        destination = tasksDoing;
                         break;
                     case 'doing':
-                        destination = document.getElementById('done');
+                        origin = tasksDoing
+                        destination = tasksDone;
                         break;
                 }
 
@@ -120,7 +135,10 @@
                     return false;
                 }
 
-                destination.prepend(task);
+                var index = origin.indexOf(task);
+                origin.splice(index, 1);
+                destination.unshift(task);
+                kanbanRedraw();
             }
         </script>
     </body>

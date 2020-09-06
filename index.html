@@ -7,6 +7,12 @@
                 margin: 0 auto;
                 width: 960px;
             }
+            #taskNew {
+                border: 1px solid black;
+                margin: 20px 0;
+                padding: 10px;
+                width: 100%;
+            }
             div {
                 float: left;
                 width: 320px;
@@ -26,23 +32,26 @@
         </style>
     </head>
     <body>
+        <input id="taskNew" placeholder="Add new task..." type="text">
         <div>
             <h1>TODO</h1>
             <ul>
-                <li>Deploy as GitHub Page</li>
             </ul>
         </div>
         
         <div>
             <h1>DOING</h1>
             <ul>
-                <li>Add CSS styles</li>
+                <li>Add new tasks using JS</li>
             </ul>
         </div>
         
         <div>
             <h1>DONE</h1>
             <ul>
+                <li>Deploy to Netlify</li>
+                <li>Deploy as GitHub Page</li>
+                <li>Add CSS styles</li>
                 <li>Add HTML body</li>
                 <li>Create index.html</li>
             </ul>

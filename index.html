@@ -41,14 +41,15 @@
         
         <div>
             <h1>DOING</h1>
-            <ul>
-                <li>Add new tasks using JS</li>
+            <ul id="doing">
+                <li>Move tasks to next columns</li>
             </ul>
         </div>
         
         <div>
             <h1>DONE</h1>
-            <ul>
+            <ul id="done">
+                <li>Add new tasks using JS</li>
                 <li>Deploy to Netlify</li>
                 <li>Deploy as GitHub Page</li>
                 <li>Add CSS styles</li>
@@ -57,9 +58,17 @@
             </ul>
         </div>
         <script>
+            // Add keypress event listener to input
             var input = document.getElementById('taskNew');
             input.addEventListener('keypress', taskCreate);
 
+            // Add click event listener to all <li></li> elements
+            var cards = document.getElementsByTagName('li');
+            for (var index = cards.length - 1; index >= 0; index--) {
+                cards[index].addEventListener('click', cardMove);
+            }
+
+            // Handle addition of new tasks
             function taskCreate (event) {
                 if (event.key !== 'Enter') {
                     return false;
@@ -70,13 +79,37 @@
                 cardCreate(task);
             }
 
+            // Create cards in TODO column and add click event listeners
             function cardCreate (task) {
                 var todo = document.getElementById('todo');
                 var card = document.createElement('li');
                 var cardText = document.createTextNode(task);
 
                 card.appendChild(cardText);
+                card.addEventListener('click', cardMove);
                 todo.appendChild(card);
+            }
+
+            // Handle movement of cards to next column
+            function cardMove (event) {
+                var task = event.target;
+                var origin = event.target.parentNode.id;
+                var destination = undefined;
+
+                switch (origin) {
+                    case 'todo':
+                        destination = document.getElementById('doing');
+                        break;
+                    case 'doing':
+                        destination = document.getElementById('done');
+                        break;
+                }
+
+                if (destination === undefined) {
+                    return false;
+                }
+
+                destination.prepend(task);
             }
         </script>
     </body>

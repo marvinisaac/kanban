@@ -100,9 +100,48 @@
                 var card = document.createElement('li');
                 var cardText = document.createTextNode(task);
 
+
+                // Update button
+                var buttonUpdate = document.createElement('span');
+                var buttonUpdateIcon = document.createTextNode('✏️');
+                buttonUpdate.appendChild(buttonUpdateIcon);
+                buttonUpdate.addEventListener('click', taskUpdate);
+
+                card.appendChild(buttonUpdate);
                 card.appendChild(cardText);
                 card.addEventListener('click', taskMove);
                 column.prepend(card);
+            }
+
+            function taskUpdate (event) {
+                var buttonUpdate = event.target;
+                var sibling = buttonUpdate.nextSibling;
+                var task = sibling.textContent;
+
+                // Display a prompt to update the selected task
+                var taskUpdated = prompt('Update task', task);
+                if (taskUpdated === null) {
+                    return false;
+                }
+
+                // If task was updated, find the original task and update it
+                var originId = event.target.parentNode.parentNode.id;
+                var origin = undefined;
+                switch (originId) {
+                    case 'todo':
+                        origin = tasksTodo
+                        break;
+                    case 'doing':
+                        origin = tasksDoing
+                        break;
+                    case 'done':
+                        origin = tasksDone
+                        break;
+                }
+                var taskIndex = origin.indexOf(task);
+                origin[taskIndex] = taskUpdated;
+                storageSave();
+                kanbanRedraw();
             }
 
             // Handle addition of new tasks
@@ -120,7 +159,7 @@
 
             // Handle movement of tasks to next 
             function taskMove (event) {
-                var task = event.target.innerText;
+                var task = event.target.lastChild.textContent;
                 var originId = event.target.parentNode.id;
                 var origin = undefined
                 var destination = undefined;

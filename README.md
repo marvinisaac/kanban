@@ -11,6 +11,7 @@ In this project, we'll start from the very basic hanggang sa mga advanced topic.
 - ✅ [Part 2: Git and GitHub](https://codewithkuya.marvinisaac.com/kanban-app-git-and-github) 
 - 📝 Part 3: JS Events and DOM Manipulation
 - 📝 Part 4: JS Arrays and Local Storage
+- 📝 Part 5: JS CRUD (Create, Read, Update, Delete) Operations
 
 ### Project Demo:
 - [GitHub Page](https://marvinisaac.github.io/kanban)

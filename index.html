@@ -100,13 +100,19 @@
                 var card = document.createElement('li');
                 var cardText = document.createTextNode(task);
 
-
                 // Update button
                 var buttonUpdate = document.createElement('span');
                 var buttonUpdateIcon = document.createTextNode('✏️');
                 buttonUpdate.appendChild(buttonUpdateIcon);
                 buttonUpdate.addEventListener('click', taskUpdate);
 
+                // Delete button
+                var buttonDelete = document.createElement('span');
+                var buttonDeleteIcon = document.createTextNode('🗑️');
+                buttonDelete.appendChild(buttonDeleteIcon);
+                buttonDelete.addEventListener('click', taskDelete);
+
+                card.appendChild(buttonDelete);
                 card.appendChild(buttonUpdate);
                 card.appendChild(cardText);
                 card.addEventListener('click', taskMove);
@@ -115,8 +121,7 @@
 
             function taskUpdate (event) {
                 var buttonUpdate = event.target;
-                var sibling = buttonUpdate.nextSibling;
-                var task = sibling.textContent;
+                var task = taskFindText(buttonUpdate);
 
                 // Display a prompt to update the selected task
                 var taskUpdated = prompt('Update task', task);
@@ -125,7 +130,51 @@
                 }
 
                 // If task was updated, find the original task and update it
-                var originId = event.target.parentNode.parentNode.id;
+                var origin = taskFindOrigin(buttonUpdate);
+                var taskIndex = origin.indexOf(task);
+                origin[taskIndex] = taskUpdated;
+                storageSave();
+                kanbanRedraw();
+            }
+
+            function taskDelete (event) {
+                var buttonDelete = event.target;
+                var task = taskFindText(buttonDelete);
+
+                // Display confirmation before deleting task
+                var wasDeleteConfirmed = confirm(`Delete "${task}"? This is irreversible.`);
+                if (!wasDeleteConfirmed) {
+                    return false;
+                }
+
+                // If delete was confirmed, find task and delete it
+                var origin = taskFindOrigin(buttonDelete);
+                var taskIndex = origin.indexOf(task);
+                origin.splice(taskIndex, 1);
+                storageSave();
+                kanbanRedraw();
+
+            }
+
+            function taskFindText (button) {
+                var sibling = button.nextSibling;
+                var text = undefined;
+
+                // Loop through all siblings to find the only plaintext element
+                while (sibling) {
+                    if (sibling.nodeName === '#text') {
+                        text = sibling.textContent;
+                        break;
+                    }
+
+                    sibling = sibling.nextSibling;
+                }
+
+                return text;
+            }
+
+            function taskFindOrigin (button) {
+                var originId = button.parentNode.parentNode.id;
                 var origin = undefined;
                 switch (originId) {
                     case 'todo':
@@ -138,10 +187,8 @@
                         origin = tasksDone
                         break;
                 }
-                var taskIndex = origin.indexOf(task);
-                origin[taskIndex] = taskUpdated;
-                storageSave();
-                kanbanRedraw();
+
+                return origin;
             }
 
             // Handle addition of new tasks

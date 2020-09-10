@@ -1,4 +1,6 @@
 .env
+.notes
 site.conf
 
+api/*.json
 cmd/

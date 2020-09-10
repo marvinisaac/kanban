@@ -12,6 +12,7 @@ In this project, we'll start from the very basic hanggang sa mga advanced topic.
 - 📝 Part 3: JS Events and DOM Manipulation
 - 📝 Part 4: JS Arrays and Local Storage
 - 📝 Part 5: JS CRUD (Create, Read, Update, Delete) Operations
+- 📝 Part 6: PHP API (Basic scripts, no framework)
 
 ### Project Demo:
 - [GitHub Page](https://marvinisaac.github.io/kanban)

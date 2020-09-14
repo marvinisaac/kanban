@@ -55,6 +55,21 @@
             break;
         }
 
+        case 'DELETE': {
+            $id = getTaskId();
+            if ($id !== null &&
+                isset($tasks[$id])
+            ) {
+                $tasks[$id] = null;
+                saveTasks($tasks);
+                header("HTTP/1.0 200 OK");
+                break;
+            }
+
+            header("HTTP/1.0 404 Not Found");
+            break;
+        }
+
         default: {
             header("HTTP/1.0 405 Method Not Allowed");
             break;

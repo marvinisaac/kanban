@@ -14,7 +14,6 @@
             saveTasks($tasks);
 
             header("HTTP/1.0 204 OK");
-            header('Content-Type: application/json');
             break;
         }
 
@@ -31,6 +30,24 @@
                 header("HTTP/1.0 200 OK");
                 header('Content-Type: application/json');
                 echo json_encode($tasks[$id]);
+                break;
+            }
+
+            header("HTTP/1.0 404 Not Found");
+            break;
+        }
+
+        case 'PUT': {
+            $id = getTaskId();
+            if ($id !== null &&
+                isset($tasks[$id])
+            ) {
+                $tasks[$id] = [
+                    'list' => $body['list'],
+                    'task' => $body['task'],
+                ];
+                saveTasks($tasks);
+                header("HTTP/1.0 200 OK");
                 break;
             }
 

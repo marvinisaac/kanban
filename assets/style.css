@@ -1,0 +1,26 @@
+body {
+    margin: 0 auto;
+    width: 960px;
+}
+#taskNew {
+    border: 1px solid black;
+    margin: 20px 0;
+    padding: 10px;
+    width: 100%;
+}
+div {
+    float: left;
+    width: 320px;
+}
+div h1 {
+    text-align: center;
+}
+div ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+div ul li {
+    border: 1px solid black;
+    margin: 10px;
+    padding: 10px;
+}

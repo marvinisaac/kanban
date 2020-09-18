@@ -14,6 +14,7 @@ In this project, we'll start from the very basic hanggang sa mga advanced topic.
 - 📝 Part 5: JS CRUD (Create, Read, Update, Delete) Operations
 - 📝 Part 6: PHP API (Basic scripts, no framework)
 - 📝 Part 7: PHP REST API (Basic scripts, no framework)
+- 📝 Part 8: Ajax (Fetch)
 
 ### Project Demo:
 - [GitHub Page](https://marvinisaac.github.io/kanban)

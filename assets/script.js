@@ -2,19 +2,52 @@
 var input = document.getElementById('taskNew');
 input.addEventListener('keypress', taskCreate);
 
-// Initialize task array and read from API
+// Initialize task array, base API url, and then read from API
+var apiUrl = 'api/task/';
 var tasksAll = []
-read();
+apiRead();
+
+// Create task in backend
+function apiCreate (task) {
+    var options = {
+        method: 'POST',
+        body: JSON.stringify({
+            task: task,
+            list: 'todo'
+        })
+    };
+    fetch(apiUrl, options);
+}
 
 // Loads tasks from backend
-function read () {
-    var url = 'api/task/';
-    return fetch(url)
+function apiRead () {
+    return fetch(apiUrl)
         .then(response => response.json())
         .then(response => {
             tasksAll = response;
+            // Hack to make sure API and UI indices are the same
+            tasksAll.unshift(null);
             kanbanRedraw();
         });
+}
+
+// Update task in backend
+function apiUpdate (taskIndex) {
+    var url = apiUrl + taskIndex;
+    var options = {
+        method: 'PUT',
+        body: JSON.stringify(tasksAll[taskIndex])
+    };
+    fetch(url, options);
+}
+
+// Delete task in backend
+function apiDelete (taskIndex) {
+    var url = apiUrl + taskIndex;
+    var options = {
+        method: 'DELETE'
+    };
+    fetch(url, options);
 }
 
 // Redraws the whole kanban by:
@@ -72,7 +105,7 @@ function taskUpdate (event) {
     // If task was updated, find the original task and update it
     var taskIndex = taskFindIndex(taskOriginal);
     tasksAll[taskIndex].task = taskUpdated;
-    // Request API to update task
+    apiUpdate(taskIndex);
     kanbanRedraw();
 }
 
@@ -89,7 +122,7 @@ function taskDelete (event) {
     // If delete was confirmed, find task and delete it
     var taskIndex = taskFindIndex(task);
     tasksAll[taskIndex] = null;
-    // Request API to delete task
+    apiDelete(taskIndex);
     kanbanRedraw();
 
 }
@@ -135,7 +168,7 @@ function taskCreate (event) {
         list: 'todo',
         task: task
     });
-    // Request API to create task
+    apiCreate(task);
     kanbanRedraw();
 }
 
@@ -160,6 +193,6 @@ function taskMove (event) {
 
     var taskIndex = taskFindIndex(task);
     tasksAll[taskIndex].list = destination;
-    // Request API to update task
+    apiUpdate(taskIndex);
     kanbanRedraw();
 }

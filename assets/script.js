@@ -6,8 +6,7 @@ input.addEventListener('keypress', taskCreate);
 var tasksTodo = [];
 var tasksDoing = [];
 var tasksDone = [];
-storageLoad();
-kanbanRedraw();
+load();
 
 // Saves tasks to backend
 function save () {
@@ -18,12 +17,17 @@ function save () {
     fetch(url);
 }
 
-// Loads JSON stored in local storage
-// If none is found, leave as blank arrays
-function storageLoad () {
-    tasksTodo = JSON.parse(localStorage.getItem('todo')) || [];
-    tasksDoing = JSON.parse(localStorage.getItem('doing')) || [];
-    tasksDone = JSON.parse(localStorage.getItem('done')) || [];
+// Loads tasks from backend
+function load () {
+    var url = 'api/load/';
+    fetch(url)
+        .then(response => response.json())
+        .then(tasks => {
+            tasksTodo = tasks.todo;
+            tasksDoing = tasks.doing;
+            tasksDone = tasks.done;
+            kanbanRedraw();
+        });
 }
 
 // Redraws the whole kanban by:

@@ -2,30 +2,17 @@
 var input = document.getElementById('taskNew');
 input.addEventListener('keypress', taskCreate);
 
-// Initialize task arrays and create columns
-var tasksTodo = [];
-var tasksDoing = [];
-var tasksDone = [];
-load();
-
-// Saves tasks to backend
-function save () {
-    var url = 'api/save/' +
-        '?todo=' + JSON.stringify(tasksTodo) +
-        '&doing=' + JSON.stringify(tasksDoing) +
-        '&done=' + JSON.stringify(tasksDone);
-    fetch(url);
-}
+// Initialize task array and read from API
+var tasksAll = []
+read();
 
 // Loads tasks from backend
-function load () {
-    var url = 'api/load/';
-    fetch(url)
+function read () {
+    var url = 'api/task/';
+    return fetch(url)
         .then(response => response.json())
-        .then(tasks => {
-            tasksTodo = tasks.todo;
-            tasksDoing = tasks.doing;
-            tasksDone = tasks.done;
+        .then(response => {
+            tasksAll = response;
             kanbanRedraw();
         });
 }
@@ -38,16 +25,13 @@ function kanbanRedraw () {
     for (var index = cards.length - 1; index >= 0; index--) {
         cards[index].remove();
     }
-    columnCreate('todo', tasksTodo);
-    columnCreate('doing', tasksDoing);
-    columnCreate('done', tasksDone);
-}
+    tasksAll.forEach(task => {
+        if (task === null) {
+            return -1;
+        }
 
-// Fill columns with tasks
-function columnCreate(column, tasks) {
-    for (var index = tasks.length - 1; index >= 0; index--) {
-        cardCreate(tasks[index], column);
-    }
+        cardCreate(task.task, task.list);
+    });
 }
 
 // Create cards in specified column and add click event listeners
@@ -77,19 +61,18 @@ function cardCreate (task, column) {
 
 function taskUpdate (event) {
     var buttonUpdate = event.target;
-    var task = taskFindText(buttonUpdate);
+    var taskOriginal = taskFindText(buttonUpdate);
 
     // Display a prompt to update the selected task
-    var taskUpdated = prompt('Update task', task);
+    var taskUpdated = prompt('Update task', taskOriginal);
     if (taskUpdated === null) {
         return false;
     }
 
     // If task was updated, find the original task and update it
-    var origin = taskFindOrigin(buttonUpdate);
-    var taskIndex = origin.indexOf(task);
-    origin[taskIndex] = taskUpdated;
-    save();
+    var taskIndex = taskFindIndex(taskOriginal);
+    tasksAll[taskIndex].task = taskUpdated;
+    // Request API to update task
     kanbanRedraw();
 }
 
@@ -104,10 +87,9 @@ function taskDelete (event) {
     }
 
     // If delete was confirmed, find task and delete it
-    var origin = taskFindOrigin(buttonDelete);
-    var taskIndex = origin.indexOf(task);
-    origin.splice(taskIndex, 1);
-    save();
+    var taskIndex = taskFindIndex(task);
+    tasksAll[taskIndex] = null;
+    // Request API to delete task
     kanbanRedraw();
 
 }
@@ -129,22 +111,16 @@ function taskFindText (button) {
     return text;
 }
 
-function taskFindOrigin (button) {
-    var originId = button.parentNode.parentNode.id;
-    var origin = undefined;
-    switch (originId) {
-        case 'todo':
-            origin = tasksTodo
-            break;
-        case 'doing':
-            origin = tasksDoing
-            break;
-        case 'done':
-            origin = tasksDone
-            break;
-    }
+function taskFindIndex (taskOriginal) {
+    var index = tasksAll.findIndex(task => {
+        if (task === null) {
+            return false;
+        }
 
-    return origin;
+        return task.task === taskOriginal;
+    });
+
+    return index;
 }
 
 // Handle addition of new tasks
@@ -155,26 +131,26 @@ function taskCreate (event) {
 
     var task = input.value;
     input.value = '';
-    tasksTodo.unshift(task);
-    save();
+    tasksAll.push({
+        list: 'todo',
+        task: task
+    });
+    // Request API to create task
     kanbanRedraw();
 }
 
 // Handle movement of tasks to next 
 function taskMove (event) {
     var task = event.target.lastChild.textContent;
-    var originId = event.target.parentNode.id;
-    var origin = undefined
+    var origin = event.target.parentNode.id;
     var destination = undefined;
 
-    switch (originId) {
+    switch (origin) {
         case 'todo':
-            origin = tasksTodo
-            destination = tasksDoing;
+            destination = 'doing';
             break;
         case 'doing':
-            origin = tasksDoing
-            destination = tasksDone;
+            destination = 'done';
             break;
     }
 
@@ -182,9 +158,8 @@ function taskMove (event) {
         return false;
     }
 
-    var index = origin.indexOf(task);
-    origin.splice(index, 1);
-    destination.unshift(task);
-    save();
+    var taskIndex = taskFindIndex(task);
+    tasksAll[taskIndex].list = destination;
+    // Request API to update task
     kanbanRedraw();
 }

@@ -9,19 +9,21 @@ var tasksDone = [];
 storageLoad();
 kanbanRedraw();
 
+// Saves tasks to backend
+function save () {
+    var url = 'api/save/' +
+        '?todo=' + JSON.stringify(tasksTodo) +
+        '&doing=' + JSON.stringify(tasksDoing) +
+        '&done=' + JSON.stringify(tasksDone);
+    fetch(url);
+}
+
 // Loads JSON stored in local storage
 // If none is found, leave as blank arrays
 function storageLoad () {
     tasksTodo = JSON.parse(localStorage.getItem('todo')) || [];
     tasksDoing = JSON.parse(localStorage.getItem('doing')) || [];
     tasksDone = JSON.parse(localStorage.getItem('done')) || [];
-}
-
-// Store arrays as JSON to local storage
-function storageSave () {
-    localStorage.setItem('todo', JSON.stringify(tasksTodo));
-    localStorage.setItem('doing', JSON.stringify(tasksDoing));
-    localStorage.setItem('done', JSON.stringify(tasksDone));
 }
 
 // Redraws the whole kanban by:
@@ -83,7 +85,7 @@ function taskUpdate (event) {
     var origin = taskFindOrigin(buttonUpdate);
     var taskIndex = origin.indexOf(task);
     origin[taskIndex] = taskUpdated;
-    storageSave();
+    save();
     kanbanRedraw();
 }
 
@@ -101,7 +103,7 @@ function taskDelete (event) {
     var origin = taskFindOrigin(buttonDelete);
     var taskIndex = origin.indexOf(task);
     origin.splice(taskIndex, 1);
-    storageSave();
+    save();
     kanbanRedraw();
 
 }
@@ -150,7 +152,7 @@ function taskCreate (event) {
     var task = input.value;
     input.value = '';
     tasksTodo.unshift(task);
-    storageSave();
+    save();
     kanbanRedraw();
 }
 
@@ -179,6 +181,6 @@ function taskMove (event) {
     var index = origin.indexOf(task);
     origin.splice(index, 1);
     destination.unshift(task);
-    storageSave();
+    save();
     kanbanRedraw();
 }
